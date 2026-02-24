@@ -169,6 +169,7 @@ def select_shallow_thinking_agent(provider, lang="en") -> str:
             ("Claude Haiku 4.5 - Fast + extended thinking", "claude-haiku-4-5"),
             ("Claude Sonnet 4.5 - Best for agents/coding", "claude-sonnet-4-5"),
             ("Claude Sonnet 4 - High-performance", "claude-sonnet-4-20250514"),
+            ("Claude Sonnet 4.6 - High-performance-4.6", "claude-sonnet-4-6"),
         ],
         "google": [
             ("Gemini 3 Flash - Next-gen fast", "gemini-3-flash-preview"),
@@ -235,6 +236,7 @@ def select_deep_thinking_agent(provider, lang="en") -> str:
             ("Claude Opus 4.1 - Most capable model", "claude-opus-4-1-20250805"),
             ("Claude Haiku 4.5 - Fast + extended thinking", "claude-haiku-4-5"),
             ("Claude Sonnet 4 - High-performance", "claude-sonnet-4-20250514"),
+            ("Claude Sonnet 4.6 - High-performance-4.6", "claude-sonnet-4-6"),
         ],
         "google": [
             ("Gemini 3 Pro - Reasoning-first", "gemini-3-pro-preview"),
@@ -283,16 +285,20 @@ def select_deep_thinking_agent(provider, lang="en") -> str:
 
 def select_llm_provider(lang="en") -> tuple[str, str]:
     """Select the OpenAI api url using interactive selection."""
-    # Define OpenAI api options with their corresponding endpoints
+    import os
+
+    # Default URLs per provider; BACKEND_URL env-var overrides all of them
+    # so that a custom proxy address never has to appear in source code.
+    env_url = os.getenv("BACKEND_URL", "").rstrip("/")
+
     BASE_URLS = [
         ("OpenAI", "https://api.openai.com/v1"),
         ("Google", "https://generativelanguage.googleapis.com/v1"),
-        ("Anthropic", "https://api.anthropic.com/"),
+        ("Anthropic", env_url),
         ("xAI", "https://api.x.ai/v1"),
         ("Openrouter", "https://openrouter.ai/api/v1"),
         ("Ollama", "http://localhost:11434/v1"),
     ]
-    
     choice = questionary.select(
         get_text("select_provider_prompt", lang),
         choices=[

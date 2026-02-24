@@ -2,7 +2,7 @@ import os
 
 DEFAULT_CONFIG = {
     # Language: "en" for English, "cn" for Simplified Chinese
-    "lang": "en",
+    "lang": "cn",
     "project_dir": os.path.abspath(os.path.join(os.path.dirname(__file__), ".")),
     "results_dir": os.getenv("TRADINGAGENTS_RESULTS_DIR", "./results"),
     "data_cache_dir": os.path.join(
@@ -10,10 +10,10 @@ DEFAULT_CONFIG = {
         "dataflows/data_cache",
     ),
     # LLM settings
-    "llm_provider": "google",
-    "deep_think_llm": "gemini-3-flash-preview",
-    "quick_think_llm": "gemini-3-flash-preview",
-    "backend_url": "https://generativelanguage.googleapis.com/v1beta",
+    "llm_provider": "anthropic",
+    "deep_think_llm": "claude-sonnet-4-6",
+    "quick_think_llm": "claude-sonnet-4-6",
+    "backend_url": os.getenv("BACKEND_URL", ""),
     # Provider-specific thinking configuration
     "google_thinking_level": None,      # "high", "minimal", etc.
     "openai_reasoning_effort": None,    # "medium", "high", "low"
