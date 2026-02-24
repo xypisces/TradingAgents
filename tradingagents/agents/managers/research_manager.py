@@ -1,8 +1,13 @@
 import time
 import json
+from tradingagents.i18n import get_agent_language_instruction
 
 
-def create_research_manager(llm, memory):
+def create_research_manager(llm, memory, config=None):
+
+    lang = (config or {}).get("lang", "en")
+    lang_instruction = get_agent_language_instruction(lang)
+
     def research_manager_node(state) -> dict:
         history = state["investment_debate_state"].get("history", "")
         market_research_report = state["market_report"]
@@ -35,7 +40,8 @@ Here are your past reflections on mistakes:
 
 Here is the debate:
 Debate History:
-{history}"""
+{history}
+{lang_instruction}"""
         response = llm.invoke(prompt)
 
         new_investment_debate_state = {

@@ -2,18 +2,23 @@
 
 from typing import Dict, Any
 from langchain_openai import ChatOpenAI
+from tradingagents.i18n import get_agent_language_instruction
 
 
 class Reflector:
     """Handles reflection on decisions and updating memory."""
 
-    def __init__(self, quick_thinking_llm: ChatOpenAI):
+    def __init__(self, quick_thinking_llm: ChatOpenAI, config=None):
         """Initialize the reflector with an LLM."""
         self.quick_thinking_llm = quick_thinking_llm
+        self.config = config or {}
         self.reflection_system_prompt = self._get_reflection_prompt()
 
     def _get_reflection_prompt(self) -> str:
         """Get the system prompt for reflection."""
+        lang = self.config.get("lang", "en")
+        lang_instruction = get_agent_language_instruction(lang)
+
         return """
 You are an expert financial analyst tasked with reviewing trading decisions/analysis and providing a comprehensive, step-by-step analysis. 
 Your goal is to deliver detailed insights into investment decisions and highlight opportunities for improvement, adhering strictly to the following guidelines:
@@ -44,7 +49,7 @@ Your goal is to deliver detailed insights into investment decisions and highligh
    - Ensure the condensed sentence captures the essence of the lessons and reasoning for easy reference.
 
 Adhere strictly to these instructions, and ensure your output is detailed, accurate, and actionable. You will also be given objective descriptions of the market from a price movements, technical indicator, news, and sentiment perspective to provide more context for your analysis.
-"""
+""" + lang_instruction
 
     def _extract_current_situation(self, current_state: Dict[str, Any]) -> str:
         """Extract the current market situation from the state."""

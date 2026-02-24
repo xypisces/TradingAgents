@@ -1,8 +1,13 @@
 import time
 import json
+from tradingagents.i18n import get_agent_language_instruction
 
 
-def create_risk_manager(llm, memory):
+def create_risk_manager(llm, memory, config=None):
+
+    lang = (config or {}).get("lang", "en")
+    lang_instruction = get_agent_language_instruction(lang)
+
     def risk_manager_node(state) -> dict:
 
         company_name = state["company_of_interest"]
@@ -41,7 +46,8 @@ Deliverables:
 
 ---
 
-Focus on actionable insights and continuous improvement. Build on past lessons, critically evaluate all perspectives, and ensure each decision advances better outcomes."""
+Focus on actionable insights and continuous improvement. Build on past lessons, critically evaluate all perspectives, and ensure each decision advances better outcomes.
+{lang_instruction}"""
 
         response = llm.invoke(prompt)
 
